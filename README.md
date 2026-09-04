@@ -47,3 +47,17 @@ Input 3×320×320
        train: 레벨별 raw 출력 [(B,74,40,40), (B,74,20,20), (B,74,10,10)]
        eval : DFL 적분 → dist2bbox → (B, 4+10, 2100)
 ```
+
+### 구성 요소
+ 
+| 파일 | 내용 |
+|---|---|
+| `blocks.py` | `Conv`(Conv+BN+SiLU), `Bottleneck`, `C2f`(split → bottleneck 누적 → concat), `SPPF`, `DFL`(16-bin softmax 기댓값 적분) |
+| `neck.py` | PAN-FPN. `F.interpolate(size=...)`로 해상도 불일치에 안전하게 top-down / bottom-up 융합 |
+| `head.py` | reg/cls 분리 head, 사전확률 기반 `bias_init`, train/eval 분기, 입력 해상도 변경 시에만 anchor 재생성 |
+| `tal.py` | Task-Aligned Assigner — GT 내부 후보 필터 → alignment metric(`s^α · IoU^β`) → top-k → 충돌 정리 → soft target 생성 |
+| `loss.py` | BCE(cls) + CIoU(box) + DFL(reg), positive 가중치를 target score 합으로 정규화 |
+| `utils.py` | `make_anchors`, `dist2bbox`, `bbox_iou`(CIoU), TAL 부품 함수 4개 |
+| `dataset.py` | YOLO 포맷(`cls cx cy w h`) 파싱, 가변 길이 GT를 `max_gt`로 패딩하는 `collate_fn` |
+| `model.py` | backbone + neck + head 조립, `load_backbone`(classifier 키 제거 후 로드), gradient 도달 검증 |
+
