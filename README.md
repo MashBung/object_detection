@@ -32,7 +32,7 @@ fp16
 ```
 Input 3×320×320
  │
- ├─ Backbone (backbone.py) — 500-class 사전학습 ResNet-18 스타일, classifier 제거
+ ├─ Backbone (backbone.py) — 500-class 사전학습 신경망, classifier 제거
  │     C3: (B,128,40,40) stride 8
  │     C4: (B,256,20,20) stride 16
  │     C5: (B,512,10,10) stride 32
