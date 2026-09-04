@@ -81,7 +81,9 @@ Input 3×320×320
 anchor-free head는 2100개 위치 전부에서 예측을 내놓지만, 그중 어떤 위치가 어떤 GT를 "책임질지"는 정해져 있지 않습니다. TAL은 분류 점수와 IoU를 함께 본 alignment metric으로 GT마다 상위 k개 위치를 positive로 고르고, 여러 GT에 겹친 위치는 IoU가 가장 높은 GT에 배정합니다. 결과로 나오는 target score는 0/1이 아닌 **soft label**이어서 잘 정렬된 예측에 더 큰 가중치가 실립니다.
  
 **DFL(Distribution Focal Loss)은 왜 거리를 분포로 예측하나**
-박스의 각 변까지의 거리를 하나의 실수로 회귀하면 경계가 애매한 객체에서 불안정합니다. 대신 0~15 bin에 대한 확률 분포를 예측하고 기댓값으로 거리를 얻으면, 정답 거리 3.7은 bin 3에 0.3, bin 4에 0.7의 가중치를 주는 cross-entropy로 학습할 수 있어 더 안정적입니다.
+박스의 각 변까지의 거리를 분류처럼 0-15사이 기댓값으로 만듭니다. 0~15 bin에 대한 확률 분포를 예측하고 기댓값으로 거리를 얻으면, 정답 거리 bin 3에 0.3, bin 4에 0.7의 가중치를 주는 cross-entropy로 학습합니다.
  
 **좌표계 일치**
-TAL과 CIoU는 GT·예측 박스와 anchor를 **모두 픽셀 좌표**로 받아야 합니다. anchor는 격자 단위로 생성되므로 `anc_points * stride`로 변환해서 넘겨야 하는데, 이 부분을 놓치면 positive가 거의 안 잡히면서 loss가 내려가지 않습니다.
+TAL과 CIoU는 GT·예측 박스와 anchor를 **모두 픽셀 좌표**로 받아야 합니다. anchor는 격자 단위로 생성되므로 `anc_points * stride`로 변환해서 넘깁니다.
+
+
