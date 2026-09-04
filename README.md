@@ -87,3 +87,14 @@ anchor-free head는 2100개 위치 전부에서 예측을 내놓지만, 그중 �
 TAL과 CIoU는 GT·예측 박스와 anchor를 **모두 픽셀 좌표**로 받아야 합니다. anchor는 격자 단위로 생성되므로 `anc_points * stride`로 변환해서 넘깁니다.
 
 
+## 추론 & 배포
+ 
+**PyTorch 추론** (`inference_pth.py`)
+전처리 → forward(eval) → conf threshold → 클래스별 `batched_nms` → 원본 크기로 좌표 복원 → 시각화.
+ 
+**ONNX export** (`export.py`, `export_fp16.py`, `test.py`)
+ 
+- opset 18, 배치·해상도 고정(320×320), `dynamic_axes=None`
+- `onnxconverter_common`으로 fp16 변환 (`keep_io_types=True`로 입출력은 fp32 유지)
+- `test.py`로 PyTorch fp32 / ONNX fp32 / ONNX fp16 출력의 최대 절대·상대 오차, inf/nan 발생 여부 검증
+- `inference_onnx.py`는 PyTorch 모델 대신 `OnnxDetector` 래퍼를 끼워 넣어 **동일한 후처리 코드를 그대로 재사용**
