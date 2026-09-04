@@ -78,7 +78,7 @@ Input 3×320×320
 ## 구현하면서 정리한 핵심 개념
  
 **TAL(Task-Aligned Assigner)은 왜 필요한가**
-anchor-free head는 2100개 위치 전부에서 예측을 내놓지만, 그중 어떤 위치가 어떤 GT를 "책임질지"는 정해져 있지 않습니다. TAL은 분류 점수와 IoU를 함께 본 alignment metric으로 GT마다 상위 k개 위치를 positive로 고르고, 여러 GT에 겹친 위치는 IoU가 가장 높은 GT에 배정합니다. 결과로 나오는 target score는 0/1이 아닌 **soft label**이어서 잘 정렬된 예측에 더 큰 가중치가 실립니다.
+anchor-free head는 2100개 위치 전부에서 예측을 내놓지만, 그중 어떤 위치가 어떤 GT를 "책임질지"는 정해져 있지 않습니다. TAL은 분류 점수와 IoU를 함께 본 alignment metric으로 GT마다 상위 k개 위치를 positive로 고르고, 여러 GT에 겹친 위치는 IoU가 가장 높은 GT에 배정합니다. 
  
 **DFL(Distribution Focal Loss)은 왜 거리를 분포로 예측하나**
 박스의 각 변까지의 거리를 분류처럼 0-15사이 기댓값으로 만듭니다. 0~15 bin에 대한 확률 분포를 예측하고 기댓값으로 거리를 얻으면, 정답 거리 bin 3에 0.3, bin 4에 0.7의 가중치를 주는 cross-entropy로 학습합니다.
@@ -98,3 +98,4 @@ TAL과 CIoU는 GT·예측 박스와 anchor를 **모두 픽셀 좌표**로 받아
 - `onnxconverter_common`으로 fp16 변환 (`keep_io_types=True`로 입출력은 fp32 유지)
 - `test.py`로 PyTorch fp32 / ONNX fp32 / ONNX fp16 출력의 최대 절대·상대 오차, inf/nan 발생 여부 검증
 - `inference_onnx.py`는 PyTorch 모델 대신 `OnnxDetector` 래퍼를 끼워 넣어 **동일한 후처리 코드를 그대로 재사용**
+
