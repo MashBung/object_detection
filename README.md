@@ -67,7 +67,7 @@ Input 3×320×320
  
 | 항목 | 설정 |
 |---|---|
-| Backbone init | 500-class 사전학습 weight (`pretrained_cnn_28.pth`), 전체 fine-tuning |
+| Backbone init | 500-class 사전학습 weight (`pretrained_cnn_28.pth`)|
 | Optimizer | AdamW (lr=1e-3, weight_decay=5e-4) |
 | Scheduler | CosineAnnealingLR (T_max=50) |
 | Loss weight | 0.5·cls + 7.5·box + 1.5·dfl (YOLOv8 기본값) |
