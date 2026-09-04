@@ -99,3 +99,9 @@ TAL과 CIoU는 GT·예측 박스와 anchor를 **모두 픽셀 좌표**로 받아
 - `test.py`로 PyTorch fp32 / ONNX fp32 / ONNX fp16 출력의 최대 절대·상대 오차, inf/nan 발생 여부 검증
 - `inference_onnx.py`는 PyTorch 모델 대신 `OnnxDetector` 래퍼를 끼워 넣어 **동일한 후처리 코드를 그대로 재사용**
 
+## 여러 출력물
+
+<img width="669" height="390" alt="result_duck" src="https://github.com/user-attachments/assets/de8c14ba-6c36-4719-a934-4caa27396c10" />
+
+<img width="437" height="586" alt="result002_rabbit" src="https://github.com/user-attachments/assets/90f388e8-e7aa-46f5-b46d-13ac20d8cb36" />
+
