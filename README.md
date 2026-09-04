@@ -61,3 +61,16 @@ Input 3×320×320
 | `dataset.py` | YOLO 포맷(`cls cx cy w h`) 파싱, 가변 길이 GT를 `max_gt`로 패딩하는 `collate_fn` |
 | `model.py` | backbone + neck + head 조립, `load_backbone`(classifier 키 제거 후 로드), gradient 도달 검증 |
 
+## 학습 설정
+ 
+`train.py`
+ 
+| 항목 | 설정 |
+|---|---|
+| Backbone init | 500-class 사전학습 weight (`pretrained_cnn_28.pth`), 전체 fine-tuning |
+| Optimizer | AdamW (lr=1e-3, weight_decay=5e-4) |
+| Scheduler | CosineAnnealingLR (T_max=50) |
+| Loss weight | 0.5·cls + 7.5·box + 1.5·dfl (YOLOv8 기본값) |
+| Batch size | 32 |
+| Epochs | 50 |
+| Assigner | TAL (topk=10, α=0.5, β=6.0) |
