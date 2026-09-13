@@ -104,7 +104,7 @@ TAL과 CIoU는 GT·예측 박스와 anchor를 **모두 픽셀 좌표**로 받아
  
 - opset 18, 배치·해상도 고정(320×320), `dynamic_axes=None`
 - `onnxconverter_common`으로 fp16 변환 (`keep_io_types=True`로 입출력은 fp32 유지)
-- PyTorch, ONNX 각각 랜덤 샘플 출력값의 차이를 비교여 오차 확인
+- PyTorch, ONNX 각각 랜덤 샘플 출력값의 차이를 비교하여 오차 확인
 - `inference_onnx.py`는 PyTorch 모델 대신 `OnnxDetector` 래퍼를 끼워 넣어 **동일한 후처리 코드를 그대로 재사용**
 
 ## 여러 출력물
