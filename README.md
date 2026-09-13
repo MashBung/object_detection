@@ -72,7 +72,7 @@ Input 3×320×320
 | Loss weight | 0.5·cls + 7.5·box + 1.5·dfl (YOLOv8 기본값) |
 | Batch size | 32 |
 | Epochs | 50 |
-| Assigner | TAL (topk=10, α=0.5, β=6.0) |
+| Assigner | TAL (topk=10, α=0.5, β=5.0) |
 
 ## 구현하면서 정리한 핵심 개념
  
