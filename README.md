@@ -51,7 +51,7 @@ Input 3×320×320
  
 | 파일 | 내용 |
 |---|---|
-| `blocks.py` | `Conv`(Conv+BN+SiLU), `Bottleneck`, `C2f`(split → bottleneck 누적 → concat), `SPPF`, `DFL`(16-bin softmax 기댓값 적분) |
+| `blocks.py` | `Conv`(Conv+BN+SiLU), `Bottleneck`, `C2f`(split → bottleneck → concat), `SPPF`, `DFL`(16-bin softmax 기댓값 적분) |
 | `neck.py` | PAN-FPN. `F.interpolate(size=...)`로 해상도 불일치에 안전하게 top-down / bottom-up 융합 |
 | `head.py` | reg/cls 분리 head, 사전확률 기반 `bias_init`, train/eval 분기, 입력 해상도 변경 시에만 anchor 재생성 |
 | `tal.py` | Task-Aligned Assigner — GT 내부 후보 필터 → alignment metric(위치 정렬점수) → top-k → 충돌 정리 → target 생성 |
