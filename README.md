@@ -21,6 +21,11 @@ fp16
 | 파라미터 수 | 17.91M |
 | 학습 환경 | RTX 5070 Ti |
 
+## 로그 발췌
+
+<img width="471" height="367" alt="image" src="https://github.com/user-attachments/assets/91d1c91d-ef1f-4128-bc91-3dc44599610c" />
+
+
 ## 왜 API호출이 아니고 구현했나
 - 한때 sota 모델이라 부르던 YOLOv8이 어떻게 작동하는지 이해하기 위해서입니다. 신경망, loss와 정답과 예측를 처리하는 구현하지 않으면 블랙박스로 남습니다.
 - 자체 사전학습한 백본을 그대로 연결하려면 채널과 stride에 맞춰 neck·head를 직접 조립해야 했습니다.
