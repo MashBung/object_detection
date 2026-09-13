@@ -60,6 +60,21 @@ Input 3×320×320
 | `dataset.py` | YOLO 포맷(`cls cx cy w h`) 파싱, 가변 길이 GT를 `max_gt`로 패딩하는 `collate_fn` |
 | `model.py` | backbone + neck + head 조립, `load_backbone`(classifier 키 제거 후 로드), gradient 도달 검증 |
 
+| 파일 | 내용 |
+|---|---|
+| `dataset.py` | YOLO 포맷(cls cx cy w h, 정규화 좌표) 파싱. collate_fn에서 픽셀 xyxy로 변환하고, 이미지마다 다른 GT 개수를 max_gt로 패딩한 뒤 mask_gt로 진짜 GT를 표시 |
+| `backbone.py` | ResidualBlock 기반 5-stage CNN(stem → stage1~5). C3/C4/C5(stride 8/16/32)를 출력하고, 분류용으로 사전학습한 가중치를 사용 |
+| `neck.py` | C5에 SPPF 적용 후 PAN-FPN. F.interpolate(size=...)로 해상도를 맞추는 top-down 경로와 stride-2 Conv를 쓰는 bottom-up 경로를 C2f로 융합하여 PAN-FPN: top-down 경로로 깊은 층의 의미 정보를 고해상도 맵에 전달하고, bottom-up 경로로 얕은 층의 위치 정보를 저해상도 맵에 전달해 P3/P4/P5를 보완 |
+| `head.py` | reg/cls 분리 head, 사전확률 기반 bias_init. train은 raw 출력 3개, eval은 DFL → dist2bbox → ×stride, sigmoid로 디코딩한 (B, 4+nc, A)를 반환. 입력 해상도가 바뀔 때만 anchor 재생성 |
+| `model.py` | backbone + neck + head 조립, load_backbone(classifier 키 제거 후 strict 로드). train/eval 출력 shape, 파라미터 수, backbone까지 gradient 도달 검증 |
+| `util.py` | make_anchors, dist2bbox, bbox_iou(IoU/CIoU), TAL 부품 함수 4개(select_candidates_in_gts, get_alignment_metric, select_topk_candidates, select_highest_overlaps) |
+| `blocks.py` | Conv(Conv+BN+SiLU), Bottleneck, C2f(split → bottleneck 연쇄 → 중간 출력 전부 concat → 1×1 Conv), SPPF, DFLDecoder(16-bin softmax 분포의 이산 기댓값으로 거리 복원) |
+| `tal.py` | Task-Aligned Assigner: GT 내부 후보 필터 → alignment metric(정렬 점수) → top-k → 충돌 정리(앵커 중복 할당 시 IoU 최대 GT 선택) → target 생성 → 점수 정규화(IoU 기반 soft label 정규화) |
+| `loss.py` | BCE(cls, soft label) + CIoU(box) + DFL. box/DFL은 positive마다 soft label로 가중하고, 세 loss 모두 target scores 합으로 정규화 |
+| `train.py` | AdamW + CosineAnnealing, loss 가중합(0.5·cls + 7.5·box + 1.5·dfl), epoch별 로그 기록과 체크포인트 저장 |
+| `inference_pth.py` | 전처리 → eval forward → conf threshold → 클래스별 NMS(batched_nms) → 원본 해상도로 좌표 복원 → 시각화 |
+| `onnx_fp32_fp16.py` | FP32 ONNX export → FP16 변환(keep_io_types) → onnxruntime 출력을 PyTorch와 비교해 오차 검증 |
+
 ## 학습 설정
  
 `train.py`
